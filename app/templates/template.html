@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Classement API</title>
+    <!-- CSS -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/kickstart.css') }}" media="all" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}" media="all" />
+
+	<!-- Javascript -->
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/js/kickstart.js"></script>
+</head>
+<body>
+<!-- Menu Horizontal -->
+<ul class="menu">
+<li class="current"><a href="/">Classement</a></li>
+<li><a href="/configuration">Config</a></li>
+<li class="right"><a href="/">Login</a></li>
+</ul>
+    {% block content %}
+    {% endblock %}
+</div> <!-- End Grid -->
+</body>
+</html>

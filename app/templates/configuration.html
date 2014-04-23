@@ -1,0 +1,107 @@
+{% extends "template.html" %}
+{% block content %}
+          {% for message in get_flashed_messages() %}
+    <div class="notice success"><i class="icon-ok icon-large"></i>{{ message }}
+<a href="#close" class="icon-remove"></a></div>
+  {% endfor %}
+<!-- Tabs Center -->
+<ul class="tabs center">
+    <li><a href="#table">Compétition</a></li>
+    <li><a href="#param">Paramètre</a></li>
+</ul>
+
+<!-- Table sortable -->
+<div id="table" class="tab-content">
+    <!-- Select -->
+    <label for="select_serie">Selectionnez la série</label>
+    <select id="select_serie">
+        {% for i in range(1,nb_serie+1) %}
+        <option value="{{ i|e }}">{{ i|e }}</option>
+        {% endfor %}
+    </select>
+    <table class="striped tight sortable" id="myTable">
+        <thead>
+        <tr>
+            <th>Rang</th>
+            <th>Classé</th>
+            <th>Numéro de départ</th>
+            <th>Nom monture</th>
+            <th>Nom cavalier</th>
+            <th>Points initial</th>
+            <th>Temps initial</th>
+            <th>Points barrage</th>
+            <th>Temps barrage</th>
+            <th>Points barrage 2</th>
+            <th>Temps barrage 2</th>
+        </tr>
+        </thead>
+
+       <tbody>
+        {% for part in classement %}
+        <tr>
+            <td>{{ part.rang|e}}</td>
+            {% if part.cl %}
+            <td>
+                <button class="small green" disabled="disabled"><i class="icon-ok-sign"></i></button>
+            </td>
+            {% else %}
+            <td>
+                <button class="small red" disabled="disabled"><i class=" icon-remove-sign"></i></button>
+            </td>
+            {% endif %}
+            <td>{{ part.num_depart|e}}</td>
+            <td>{{ part.nom_monture|e}}</td>
+            <td>{{ part.nom_cavalier|e}}</td>
+            <td>{{ part.points_init|e}}</td>
+            <td>{{ part.temps_init|e}}</td>
+            <td>{{ part.points_barr|e}}</td>
+            <td>{{ part.temps_barr|e}}</td>
+            <td>{{ part.points_barr2|e}}</td>
+            <td>{{ part.temps_barr2|e}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="param" class="tab-content">
+
+<form action="{{ url_for('updateConfig') }}" method=post class="vertical">
+    <div class="col_4">
+<fieldset>
+	<legend>Temps</legend>
+            <label for="tmp_charge_chrono">Temps pour la prise en charge du parcours<span class="right">Secondes</span></label>
+            <input type="number" class="inline" name="tmp_charge_chrono" id="tmp_charge_chrono" min="0" value="{{config.tmp_charge_chrono|e}}">
+
+            <label for="tmp_aff_class">Temps d'affichage du classement<span class="right">Secondes</span></label>
+            <input type="number" class="inline" name="tmp_aff_class" id="tmp_aff_class" min="0" value="{{config.tmp_aff_class|e}}">
+
+            <label for="tmp_aff_temps">Temps d'affichage du temps effectué<span class="right">Secondes</span></label>
+            <input type="number" class="inline" name="tmp_aff_temps" id="tmp_aff_temps" min="0" value="{{config.tmp_aff_temps|e}}">
+	</div>
+    <div class="col_4">
+<fieldset>
+	<legend>Pénalité</legend>
+            <label for="pen_tmps_depasse">Pénalité en cas de temps dépassé du parcours initial<span class="right">Points</span></label>
+            <input type="number" class="inline" name="pen_tmps_depasse" id="pen_tmps_depasse" step="0.25" min="0" value="{{config.pen_tmps_depasse|e}}">
+
+            <label for="pen_tmps_depasse_barr">Pénalité en cas de temps dépassé du barrage<span class="right">Points</span></label>
+            <input type="number" class="inline" name="pen_tmps_depasse_barr" id="pen_tmps_depasse_barr" step="0.25" min="0" value="{{config.pen_tmps_depasse_barr|e}}">
+
+            <label for="pen_tmps_depasse_2_phase">Pénalité en cas de temps dépassé dans la phase 2<span class="right">Points</span></label>
+            <input type="number" class="inline" name="pen_tmps_depasse_2_phase" id="pen_tmps_depasse_2_phase" step="0.25" min="0" value="{{config.pen_tmps_depasse_2_phase|e}}">
+
+</div>
+
+<div class="col_4">
+<fieldset>
+	<legend>Divers</legend>
+            <input type="checkbox" name="send_aff" id="send_aff" checked="{{config.send_aff|e}}"/>
+            <label for="send_aff" class="inline">Envoie du classement sur l'afficheur</label>
+
+	</div>
+      <button type="submit" class="button center"><span class="icon-save"> Sauvegarder</span></button>
+    </form>
+</div>
+
+{% endblock %}
