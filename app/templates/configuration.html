@@ -4,6 +4,183 @@
     <div class="notice success"><i class="icon-ok icon-large"></i>{{ message }}
 <a href="#close" class="icon-remove"></a></div>
   {% endfor %}
+
+  <style>
+.btn-close {
+  color: #aaaaaa;
+  font-size: 30px;
+  text-decoration: none;
+  position: absolute;
+  right: 5px;
+  top: 0;
+}
+
+.modal:before {
+  content: "";
+  display: none;
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
+.modal:target:before {
+  display: block;
+}
+.modal:target .modal-dialog {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  transform: translate(0, 0);
+  top: 20%;
+}
+.modal-dialog {
+  background: #fefefe;
+  border: #333333 solid 1px;
+  border-radius: 5px;
+  margin-left: -200px;
+  position: fixed;
+  left: 50%;
+  top: -100%;
+  z-index: 11;
+  width: 360px;
+  -webkit-transform: translate(0, -500%);
+  -ms-transform: translate(0, -500%);
+  transform: translate(0, -500%);
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+  -moz-transition: -moz-transform 0.3s ease-out;
+  -o-transition: -o-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+}
+.modal-body {
+  padding: 20px;
+}
+.modal-header,
+.modal-footer {
+  padding: 10px 20px;
+}
+.modal-header {
+  border-bottom: #eeeeee solid 1px;
+}
+.modal-header h2 {
+  font-size: 20px;
+}
+.modal-footer {
+  border-top: #eeeeee solid 1px;
+  text-align: right;
+}</style>
+
+<!-- Modal -->
+<div class="modal" id="modal-one" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h2>Commencer une nouvelle compétition ?</h2>
+      <a href="#" class="btn-close" aria-hidden="true"><i class=" icon-remove-sign"></i></a>
+    </div>
+    <div class="modal-body">
+      <p>Ceci supprimera toutes les épreuves et les participants de cette compétition.</p>
+    </div>
+    <div class="modal-footer">
+        <form action="/newCompet">
+      <a href="#" class="btn">Retour</a>
+        <button class="medium" type="submit"><i class="icon-ok-sign"> OK </i></button>
+            </form>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal" id="modal-add-epreuve" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h2>Créer une épreuve ?</h2>
+      <a href="#" class="btn-close" aria-hidden="true"><i class=" icon-remove-sign"></i></a>
+    </div>
+       <form id="form-add-epreuve" action="/addEpreuve" class="vertical" method="post">
+    <div class="modal-body">
+         <label for="add_epreuve_nom">Nom</label>
+        <input type="text" name="nom" id="add_epreuve_nom" required="True">
+
+         <label for="select_bareme">Barème :</label>
+    <select id="select_bareme" name="select_bareme" form="form-add-epreuve" required="True">
+        {% for i in baremes %}
+        <option value="{{ i.code|e }}" >{{ i.desc|e }}</option>
+        {% endfor %}
+    </select>
+        <label for="add_epreuve_temps_accorde">Temps accordé<span class="right">Secondes</span></label>
+        <input name="temps_accorde" type="number" id="add_epreuve_temps_accorde" required="True">
+        <label for="add_epreuve_serie">Nombre de série</span></label>
+        <input name="nb_serie" type="number" value="1" id="add_epreuve_serie" required="True">
+    </div>
+    <div class="modal-footer">
+
+      <a href="#" class="btn">Retour</a>
+        <button class="medium" type="submit"><i class="icon-save"> Save </i></button>
+
+    </div>
+            </form>
+  </div>
+</div>
+<!-- /Modal -->
+
+
+<!-- Modal -->
+<div class="modal" id="modal-del-epreuve" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h2>Supprimer {{epreuve.nom|e}}?</h2>
+      <a href="#" class="btn-close" aria-hidden="true"><i class=" icon-remove-sign"></i></a>
+    </div>
+    <div class="modal-body">
+        <p>Êtes-vous sur de vouloir supprimer l'épreuve {{epreuve.nom|e}}?</p>
+    <div class="modal-footer">
+    <form method="get" action="/delEpreuve/{{epreuve.id|e}}">
+      <a href="#" class="btn">Annuler</a>
+        <button class="medium" type="submit"><i class="icon-trash"> Supprimer </i></button>
+ </form>
+    </div>
+
+  </div>
+</div>
+    </div>
+<!-- /Modal -->
+<!-- Modal -->
+<div class="modal" id="modal-edit-epreuve" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h2>Editer {{epreuve.nom|e}}?</h2>
+      <a href="#" class="btn-close" aria-hidden="true"><i class=" icon-remove-sign"></i></a>
+    </div>
+       <form id="form-edit-epreuve" action="/editEpreuve/{{epreuve.id|e}}" class="vertical" method="post">
+    <div class="modal-body">
+         <label for="edit_epreuve_nom">Nom</label>
+        <input type="text" name="nom" id="edit_epreuve_nom" required="True" value="{{epreuve.nom|e}}">
+
+         <label for="select_edit_bareme">Barème :</label>
+    <select id="select_edit_bareme" name="select_edit_bareme" form="form-edit-epreuve" required="True">
+        {% for i in baremes %}
+        <option value="{{ i.code|e }}" {% if i.code == epreuve.bareme_code %} selected="selected" {% endif %} >{{ i.desc|e }}</option>
+        {% endfor %}
+    </select>
+        <label for="edit_epreuve_temps_accorde">Temps accordé<span class="right">Secondes</span></label>
+        <input name="temps_accorde" type="number" id="edit_epreuve_temps_accorde" required="True" value="{{epreuve.temps_accorde|e}}">
+        <label for="edit_epreuve_serie">Nombre de série</span></label>
+        <input name="nb_serie" type="number" value="1" id="edit_epreuve_serie" required="True" value="{{epreuve.nb_serie|e}}">
+    </div>
+    <div class="modal-footer">
+
+      <a href="#" class="btn">Retour</a>
+        <button class="medium" type="submit"><i class="icon-save"> Save </i></button>
+
+    </div>
+            </form>
+  </div>
+</div>
+<!-- /Modal -->
+
 <!-- Tabs Center -->
 <ul class="tabs center">
     <li><a href="#table">Compétition</a></li>
@@ -13,34 +190,78 @@
 <!-- Table sortable -->
 <div id="table" class="tab-content">
     <!-- Select -->
+    <div class="col_4">
     <label for="select_serie">Selectionnez la série</label>
+
     <select id="select_serie">
         {% for i in range(1,nb_serie+1) %}
         <option value="{{ i|e }}">{{ i|e }}</option>
         {% endfor %}
     </select>
-    <table class="striped tight sortable" id="myTable">
+
+    </div>
+        <div class="col_4">
+            <form action="/setEpreuve" method="post" id="form-epreuve" >
+    <label for="select_epreuve">Selectionnez l'épreuve courante :</label>
+
+    <select id="select_epreuve" name="select_epreuve" form="form-epreuve">
+        {% for i in epreuves %}
+        <option value="{{ i.id|e }}" {% if i.id == epreuve.id %} selected="selected" {% endif %} >{{ i.nom|e }}</option>
+        {% endfor %}
+    </select>
+                <button type="submit" class="blue inline" > <i class="icon-refresh"></i></button>
+                </form>
+<style>
+form.mbt {
+  display:inline;
+}
+    </style>
+       <form action="#modal-add-epreuve" class="mbt">
+        <button class="medium green" type="submit"> <i class="icon-plus"></i></button>
+    </form>
+    <form action="#modal-del-epreuve" class="mbt">
+        <button class="medium red" type="submit"> <i class=" icon-minus"></i></button>
+    </form>
+    <form action="#modal-edit-epreuve" class="mbt">
+        <button class="medium orange" type="submit"> <i class=" icon-wrench"></i></button>
+    </form>
+    </div>
+
+    <div class="col_4">
+    <form action="#modal-one">
+        <button class="medium pink" type="submit">Nouvelle compétition <i class="icon-trophy"></i></button>
+    </form>
+
+       </div>
+   <table class="striped tight sortable" id="myTable">
         <thead>
         <tr>
-            <th>Rang</th>
-            <th>Classé</th>
+           <!-- <th>Rang</th>-->
+            <th>Série</th>
+            <!--<th>Classé</th>-->
             <th>Numéro de départ</th>
-            <th>Nom monture</th>
-            <th>Nom cavalier</th>
-            <th>Points initial</th>
-            <th>Temps initial</th>
-            <th>Points barrage</th>
-            <th>Temps barrage</th>
-            <th>Points barrage 2</th>
-            <th>Temps barrage 2</th>
+            <th>Nom monture /<br>Nom cavalier</th>
+            <th>Points initial /<br>Temps initial</th>
+            <th>Etat initial</th>
+            <th>Points barrage /<br>Temps barrage</th>
+            <th>Etat barrage</th>
+            <th>Points barrage 2 /<br>Temps barrage 2</th>
+            <th>Etat barrage 2</th>
+            <th></th>
         </tr>
         </thead>
 
        <tbody>
         {% for part in classement %}
+         <form action="/editPart/{{part.id}}" id="editPart{{part.id}}" class="mbt" method="post">
         <tr>
-            <td>{{ part.rang|e}}</td>
-            {% if part.cl %}
+            <!--<td>{{ part.rang|e}}</td>-->
+            <td><select id="select_serie_part" name="serie" form="editPart{{part.id}}">
+        {% for i in range(1,epreuve.nb_serie+1) %}
+        <option value="{{ i|e }}">{{ i|e }}</option>
+        {% endfor %}
+    </select> </td>
+      <!--      {% if part.cl %}
             <td>
                 <button class="small green" disabled="disabled"><i class="icon-ok-sign"></i></button>
             </td>
@@ -49,17 +270,79 @@
                 <button class="small red" disabled="disabled"><i class=" icon-remove-sign"></i></button>
             </td>
             {% endif %}
-            <td>{{ part.num_depart|e}}</td>
-            <td>{{ part.nom_monture|e}}</td>
-            <td>{{ part.nom_cavalier|e}}</td>
-            <td>{{ part.points_init|e}}</td>
-            <td>{{ part.temps_init|e}}</td>
-            <td>{{ part.points_barr|e}}</td>
-            <td>{{ part.temps_barr|e}}</td>
-            <td>{{ part.points_barr2|e}}</td>
-            <td>{{ part.temps_barr2|e}}</td>
+-->
+            <td><input type="number" value="{{ part.num_depart|e}}" name="num_depart"></td>
+            <td><input type="text" value="{{ part.nom_monture|e}}" name="nom_monture"> /<br><input type="text" value="{{ part.nom_cavalier|e}}" name="nom_cavalier"></td>
+            <td><input type="number" step="0.25" value="{{ part.points_init|e}}" name="points_init"> /<br><input type="number" value="{{ part.temps_init|e}}" name="temps_init"></td>
+            <td><select id="select_etat_init{{part.id}}" name="select_etat_init{{part.id}}" form="editPart{{part.id}}">
+        <option value="undef" {% if part.etat_init == "undef" %} selected="selected" {% endif %} >undef</option>
+                 <option value="elimine" {% if part.etat_init == "elimine" %} selected="selected" {% endif %} >elimine</option>
+                 <option value="abandon" {% if part.etat_init == "abandon" %} selected="selected" {% endif %} >abandon</option>
+
+    </select></td>
+            <td><input type="number" step="0.25" value="{{ part.points_barr|e}}" name="points_barr"> /<br><input type="number" value="{{ part.temps_barr|e}}" name="temps_barr"></td>
+            <td><select id="select_etat_barr{{part.id}}" name="select_etat_barr{{part.id}}" form="editPart{{part.id}}">
+        <option value="undef" {% if part.etat_barr == "undef" %} selected="selected" {% endif %} >undef</option>
+                 <option value="elimine" {% if part.etat_barr == "elimine" %} selected="selected" {% endif %} >elimine</option>
+                 <option value="abandon" {% if part.etat_barr == "abandon" %} selected="selected" {% endif %} >abandon</option>
+
+    </select></td>
+           <td><input type="number" step="0.25" value="{{ part.points_barr2|e}}" name="points_barr2"> /<br><input type="number" value="{{ part.temps_barr2|e}}" name="temps_barr2"></td>
+            <td><select id="select_etat_barr2{{part.id}}" name="select_etat_barr2{{part.id}}" form="editPart{{part.id}}">
+        <option value="undef" {% if part.etat_barr2 == "undef" %} selected="selected" {% endif %} >undef</option>
+                 <option value="elimine" {% if part.etat_barr2 == "elimine" %} selected="selected" {% endif %} >elimine</option>
+                 <option value="abandon" {% if part.etat_barr2 == "abandon" %} selected="selected" {% endif %} >abandon</option>
+
+    </select></td>
+
+            <th>
+            <button class="medium red" type="button" onclick="self.location.href='/deletePart/{{part.id}}'"><i class=" icon-minus"></i></a></button>
+            <button class="medium orange" type="submit" > <i class=" icon-wrench"></i></button>
+            </th>
         </tr>
+        </form>
         {% endfor %}
+                <form action="/addPart" id="addPart" class="mbt" method="post">
+        <tr>
+
+
+
+ <td><select id="select_serie_part_add" name="serie" form="addPart">
+        {% for i in range(1,epreuve.nb_serie+1) %}
+        <option value="{{ i|e }}">{{ i|e }}</option>
+        {% endfor %}
+    </select> </td>
+
+
+            <td><input type="number" name="num_depart" required="true"></td>
+            <td><input type="text"  name="nom_monture"> /<br><input type="text"  name="nom_cavalier"></td>
+            <td><input type="number" step="0.25"  name="points_init"value="0" required="true"> /<br><input type="number" value="0" required="true" name="temps_init"></td>
+            <td><select id="select_etat_init_add" name="select_etat_init_add" form="addPart">
+        <option value="undef"  >undef</option>
+                 <option value="elimine"  >elimine</option>
+                 <option value="abandon"  >abandon</option>
+
+    </select></td>
+            <td><input type="number" step="0.25"  name="points_barr"value="0" required="true"> /<br><input type="number" value="0" required="true" name="temps_barr"></td>
+            <td><select id="select_etat_barr_add" name="select_etat_barr_add" form="addPart">
+        <option value="undef" selected="selected">undef</option>
+                 <option value="elimine" >elimine</option>
+                 <option value="abandon" >abandon</option>
+
+    </select></td>
+           <td><input type="number" step="0.25"  name="points_barr2" value="0" required="true"> /<br><input type="number" value="0" required="true" name="temps_barr2"></td>
+            <td><select id="select_etat_barr2_add" name="select_etat_barr2_add" form="addPart">
+        <option value="undef" selected="selected">undef</option>
+                 <option value="elimine" >elimine</option>
+                 <option value="abandon" >abandon</option>
+
+    </select></td>
+
+            <th>
+                <button class="medium green" type="submit" > <i class=" icon-plus"></i></button>
+            </th>
+        </tr>
+        </form>
         </tbody>
     </table>
 </div>
@@ -71,37 +354,45 @@
 <fieldset>
 	<legend>Temps</legend>
             <label for="tmp_charge_chrono">Temps pour la prise en charge du parcours<span class="right">Secondes</span></label>
-            <input type="number" class="inline" name="tmp_charge_chrono" id="tmp_charge_chrono" min="0" value="{{config.tmp_charge_chrono|e}}">
+            <input required="True" type="number" class="inline" name="tmp_charge_chrono" id="tmp_charge_chrono" min="0" value="{{config.tmp_charge_chrono|e}}">
 
             <label for="tmp_aff_class">Temps d'affichage du classement<span class="right">Secondes</span></label>
-            <input type="number" class="inline" name="tmp_aff_class" id="tmp_aff_class" min="0" value="{{config.tmp_aff_class|e}}">
+            <input required="True" type="number" class="inline" name="tmp_aff_class" id="tmp_aff_class" min="0" value="{{config.tmp_aff_class|e}}">
 
             <label for="tmp_aff_temps">Temps d'affichage du temps effectué<span class="right">Secondes</span></label>
-            <input type="number" class="inline" name="tmp_aff_temps" id="tmp_aff_temps" min="0" value="{{config.tmp_aff_temps|e}}">
+            <input required="True" type="number" class="inline" name="tmp_aff_temps" id="tmp_aff_temps" min="0" value="{{config.tmp_aff_temps|e}}">
 	</div>
     <div class="col_4">
 <fieldset>
 	<legend>Pénalité</legend>
             <label for="pen_tmps_depasse">Pénalité en cas de temps dépassé du parcours initial<span class="right">Points</span></label>
-            <input type="number" class="inline" name="pen_tmps_depasse" id="pen_tmps_depasse" step="0.25" min="0" value="{{config.pen_tmps_depasse|e}}">
+            <input required="True" type="number" class="inline" name="pen_tmps_depasse" id="pen_tmps_depasse" step="0.25" min="0" value="{{config.pen_tmps_depasse|e}}">
 
             <label for="pen_tmps_depasse_barr">Pénalité en cas de temps dépassé du barrage<span class="right">Points</span></label>
-            <input type="number" class="inline" name="pen_tmps_depasse_barr" id="pen_tmps_depasse_barr" step="0.25" min="0" value="{{config.pen_tmps_depasse_barr|e}}">
+            <input required="True" type="number" class="inline" name="pen_tmps_depasse_barr" id="pen_tmps_depasse_barr" step="0.25" min="0" value="{{config.pen_tmps_depasse_barr|e}}">
 
             <label for="pen_tmps_depasse_2_phase">Pénalité en cas de temps dépassé dans la phase 2<span class="right">Points</span></label>
-            <input type="number" class="inline" name="pen_tmps_depasse_2_phase" id="pen_tmps_depasse_2_phase" step="0.25" min="0" value="{{config.pen_tmps_depasse_2_phase|e}}">
+            <input required="True" type="number" class="inline" name="pen_tmps_depasse_2_phase" id="pen_tmps_depasse_2_phase" step="0.25" min="0" value="{{config.pen_tmps_depasse_2_phase|e}}">
 
 </div>
 
 <div class="col_4">
 <fieldset>
 	<legend>Divers</legend>
-            <input type="checkbox" name="send_aff" id="send_aff" checked="{{config.send_aff|e}}"/>
+            <input type="checkbox" name="send_aff" id="send_aff" {% if config.send_aff %} checked="checked" {% endif %}/>
             <label for="send_aff" class="inline">Envoie du classement sur l'afficheur</label>
 
 	</div>
       <button type="submit" class="button center"><span class="icon-save"> Sauvegarder</span></button>
     </form>
 </div>
+
+ <script type=text/javascript>
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+$('#select_epreuve').change(function(){
+        this.form.submit();
+})
+ </script>
 
 {% endblock %}
