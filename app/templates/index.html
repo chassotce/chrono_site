@@ -10,7 +10,7 @@
     <!-- Select -->
     <label for="select_serie">Selectionnez la série</label>
     <select id="select_serie">
-        {% for i in range(1,nb_serie+1) %}
+        {% for i in series %}
         <option value="{{ i|e }}">{{ i|e }}</option>
         {% endfor %}
     </select>

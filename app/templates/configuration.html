@@ -5,71 +5,7 @@
 <a href="#close" class="icon-remove"></a></div>
   {% endfor %}
 
-  <style>
-.btn-close {
-  color: #aaaaaa;
-  font-size: 30px;
-  text-decoration: none;
-  position: absolute;
-  right: 5px;
-  top: 0;
-}
 
-.modal:before {
-  content: "";
-  display: none;
-  background: rgba(0, 0, 0, 0.6);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-}
-.modal:target:before {
-  display: block;
-}
-.modal:target .modal-dialog {
-  -webkit-transform: translate(0, 0);
-  -ms-transform: translate(0, 0);
-  transform: translate(0, 0);
-  top: 20%;
-}
-.modal-dialog {
-  background: #fefefe;
-  border: #333333 solid 1px;
-  border-radius: 5px;
-  margin-left: -200px;
-  position: fixed;
-  left: 50%;
-  top: -100%;
-  z-index: 11;
-  width: 360px;
-  -webkit-transform: translate(0, -500%);
-  -ms-transform: translate(0, -500%);
-  transform: translate(0, -500%);
-  -webkit-transition: -webkit-transform 0.3s ease-out;
-  -moz-transition: -moz-transform 0.3s ease-out;
-  -o-transition: -o-transform 0.3s ease-out;
-  transition: transform 0.3s ease-out;
-}
-.modal-body {
-  padding: 20px;
-}
-.modal-header,
-.modal-footer {
-  padding: 10px 20px;
-}
-.modal-header {
-  border-bottom: #eeeeee solid 1px;
-}
-.modal-header h2 {
-  font-size: 20px;
-}
-.modal-footer {
-  border-top: #eeeeee solid 1px;
-  text-align: right;
-}</style>
 
 <!-- Modal -->
 <div class="modal" id="modal-one" aria-hidden="true">
@@ -168,7 +104,7 @@
         <label for="edit_epreuve_temps_accorde">Temps accordé<span class="right">Secondes</span></label>
         <input name="temps_accorde" type="number" id="edit_epreuve_temps_accorde" required="True" value="{{epreuve.temps_accorde|e}}">
         <label for="edit_epreuve_serie">Nombre de série</span></label>
-        <input name="nb_serie" type="number" value="1" id="edit_epreuve_serie" required="True" value="{{epreuve.nb_serie|e}}">
+        <input name="nb_serie" type="number" id="edit_epreuve_serie" required="True" value="{{epreuve.nb_serie|e}}">
     </div>
     <div class="modal-footer">
 
@@ -189,19 +125,11 @@
 
 <!-- Table sortable -->
 <div id="table" class="tab-content">
-    <!-- Select -->
-    <div class="col_4">
-    <label for="select_serie">Selectionnez la série</label>
 
-    <select id="select_serie">
-        {% for i in range(1,nb_serie+1) %}
-        <option value="{{ i|e }}">{{ i|e }}</option>
-        {% endfor %}
-    </select>
-
-    </div>
-        <div class="col_4">
-            <form action="/setEpreuve" method="post" id="form-epreuve" >
+        <div class="col_5">
+            <fieldset>
+	<legend>Séléction,Ajout,Suppression,Edition d'épreuve</legend>
+            <form action="/setEpreuve" method="post" id="form-epreuve" class="mbt" >
     <label for="select_epreuve">Selectionnez l'épreuve courante :</label>
 
     <select id="select_epreuve" name="select_epreuve" form="form-epreuve">
@@ -220,14 +148,18 @@ form.mbt {
         <button class="medium green" type="submit"> <i class="icon-plus"></i></button>
     </form>
     <form action="#modal-del-epreuve" class="mbt">
-        <button class="medium red" type="submit"> <i class=" icon-minus"></i></button>
+        <button class="medium red" type="submit"{% if epreuve.nb_serie == 0 %} disabled="disabled" {% endif %}> <i class=" icon-minus"></i></button>
     </form>
     <form action="#modal-edit-epreuve" class="mbt">
-        <button class="medium orange" type="submit"> <i class=" icon-wrench"></i></button>
+        <button class="medium orange" type="submit"{% if epreuve.nb_serie == 0 %} disabled="disabled" {% endif %}> <i class=" icon-wrench"></i></button>
     </form>
     </div>
 
     <div class="col_4">
+        </div>
+    <div class="col_3">
+        <fieldset>
+	<legend>Compétition</legend>
     <form action="#modal-one">
         <button class="medium pink" type="submit">Nouvelle compétition <i class="icon-trophy"></i></button>
     </form>
@@ -258,7 +190,7 @@ form.mbt {
             <!--<td>{{ part.rang|e}}</td>-->
             <td><select id="select_serie_part" name="serie" form="editPart{{part.id}}">
         {% for i in range(1,epreuve.nb_serie+1) %}
-        <option value="{{ i|e }}">{{ i|e }}</option>
+        <option value="{{ i|e }}" {% if part.serie == i %} selected="selected" {% endif %}>{{ i|e }}</option>
         {% endfor %}
     </select> </td>
       <!--      {% if part.cl %}
@@ -297,16 +229,13 @@ form.mbt {
 
             <th>
             <button class="medium red" type="button" onclick="self.location.href='/deletePart/{{part.id}}'"><i class=" icon-minus"></i></a></button>
-            <button class="medium orange" type="submit" > <i class=" icon-wrench"></i></button>
+            <button class="medium orange" type="submit" > <i class=" icon-save"></i></button>
             </th>
         </tr>
         </form>
         {% endfor %}
                 <form action="/addPart" id="addPart" class="mbt" method="post">
         <tr>
-
-
-
  <td><select id="select_serie_part_add" name="serie" form="addPart">
         {% for i in range(1,epreuve.nb_serie+1) %}
         <option value="{{ i|e }}">{{ i|e }}</option>
@@ -339,7 +268,7 @@ form.mbt {
     </select></td>
 
             <th>
-                <button class="medium green" type="submit" > <i class=" icon-plus"></i></button>
+                <button data-content="#tooltipcontentID" class="medium green tooltip" type="submit" {% if epreuve.nb_serie == 0 %} disabled="disabled" {% endif %}> <i class=" icon-plus"></i></button>
             </th>
         </tr>
         </form>
@@ -393,6 +322,15 @@ $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 $('#select_epreuve').change(function(){
         this.form.submit();
 })
+
+$('#select_epreuve').onload(function(){
+        this.form.submit();
+})
  </script>
 
+        <!-- Tooltip Content -->
+<div class="tooltip-content" id="tooltipcontentID">
+<p>Il est nécessaire de créer une épreuve avant de pouvoir ajouter un participant.</p></div>
+
 {% endblock %}
+

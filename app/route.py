@@ -33,10 +33,11 @@ def index():
         ser = {}
         for p in data['participants']:
             ser[p['serie']]=p['serie']
+            print ser
     except:
         ser={}
 
-    return render_template("index.html",nb_serie=len(ser),epreuve=epreuve['epreuve'])
+    return render_template("index.html",series=ser,epreuve=epreuve['epreuve'])
 
 
 @app.route('/configuration')
@@ -58,7 +59,7 @@ def configuration():
         epreuve = loads(r.text)
         epreuve['epreuve']
     except:
-        epreuve = {'epreuve':{}}
+        epreuve = {'epreuve':{"nb_serie":0}}
     try:
         url = app.config['REST_PATH']+'participants/'+str(epreuve['epreuve']['id'])
 
@@ -67,13 +68,8 @@ def configuration():
         t = loads(r.text)
         t['participants']
     except:
-        data = {"participants":[]}
-    try:
-        ser = {}
-        for p in data['participants']:
-            ser[p['serie']]=p['serie']
-    except:
-        ser={}
+        t = {"participants":[]}
+
 
     try:
         url = app.config['REST_PATH']+'config'
@@ -91,7 +87,7 @@ def configuration():
     except:
         baremes = {"baremes":{}}
     return render_template("configuration.html",epreuves=epreuves['epreuves'],epreuve=epreuve['epreuve']\
-        ,classement=t['participants'],nb_serie=len(ser),config=conf['config'],baremes=baremes['baremes'])
+        ,classement=t['participants'],config=conf['config'],baremes=baremes['baremes'])
     # except:
     #     url = app.config['REST_PATH']+'config'
     #     r = requests.get(url)
@@ -146,6 +142,7 @@ def addEpreuve():
     headers = {'content-type': 'application/json'}
     r = requests.post(url,data=dumps(payload),headers=headers)
     print r.text
+    flash('Nouvelle epreuve')
     return redirect(url_for('configuration'))
 
 @app.route('/delEpreuve/<int:id>')
@@ -153,6 +150,7 @@ def delEpreuve(id):
     url = app.config['REST_PATH']+'epreuve/'+str(id)
     r = requests.delete(url)
     print r.text
+    flash('Epreuve efface')
     return redirect(url_for('configuration'))
 
 @app.route('/editEpreuve/<int:id>',methods=['POST'])
@@ -167,6 +165,7 @@ def editEpreuve(id):
     print dumps(payload)
     r = requests.put(url,data=dumps(payload),headers=headers)
     print r.text
+    flash('Epreuve modifie')
     return redirect(url_for('configuration'))
 
 @app.route('/editPart/<int:id>',methods=['POST'])
@@ -201,6 +200,7 @@ def editPart(id):
     print dumps(payload)
     r = requests.put(url,data=dumps(payload),headers=headers)
     print r.text
+    flash('Participant modifie')
     return redirect(url_for('configuration'))
 
 @app.route('/addPart',methods=['POST'])
@@ -235,6 +235,7 @@ def addPart():
     print dumps(payload)
     r = requests.post(url,data=dumps(payload),headers=headers)
     print 'adfasdfsadf',r.text
+    flash('Nouvau participant')
     return redirect(url_for('configuration'))
 
 @app.route('/deletePart/<int:id>')
@@ -242,4 +243,5 @@ def delPart(id):
     url = app.config['REST_PATH']+'participant/'+str(id)
     r = requests.delete(url)
     print r.text
+    flash('Participant supprime')
     return redirect(url_for('configuration'))
