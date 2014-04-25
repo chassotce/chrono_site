@@ -171,7 +171,7 @@ form.mbt {
            <!-- <th>Rang</th>-->
             <th>Série</th>
             <!--<th>Classé</th>-->
-            <th>Numéro de départ</th>
+            <th>Numéro de départ / <br> Hors-concours</th>
             <th>Nom monture /<br>Nom cavalier</th>
             <th>Points initial /<br>Temps initial</th>
             <th>Etat initial</th>
@@ -203,7 +203,8 @@ form.mbt {
             </td>
             {% endif %}
 -->
-            <td><input type="number" value="{{ part.num_depart|e}}" name="num_depart"></td>
+            <td><input type="number" value="{{ part.num_depart|e}}" name="num_depart">
+                <input type="checkbox" name="hc" id="hc" {% if part.hc %} checked="checked" {% endif %}/></td>
             <td><input type="text" value="{{ part.nom_monture|e}}" name="nom_monture"> /<br><input type="text" value="{{ part.nom_cavalier|e}}" name="nom_cavalier"></td>
             <td><input type="number" step="0.25" value="{{ part.points_init|e}}" name="points_init"> /<br><input type="number" value="{{ part.temps_init|e}}" name="temps_init"></td>
             <td><select id="select_etat_init{{part.id}}" name="select_etat_init{{part.id}}" form="editPart{{part.id}}">
@@ -243,7 +244,8 @@ form.mbt {
     </select> </td>
 
 
-            <td><input type="number" name="num_depart" required="true"></td>
+            <td><input type="number" name="num_depart" required="true">
+            <input type="checkbox" name="hc" id="hc_add" /></td>
             <td><input type="text"  name="nom_monture"> /<br><input type="text"  name="nom_cavalier"></td>
             <td><input type="number" step="0.25"  name="points_init"value="0" required="true"> /<br><input type="number" value="0" required="true" name="temps_init"></td>
             <td><select id="select_etat_init_add" name="select_etat_init_add" form="addPart">

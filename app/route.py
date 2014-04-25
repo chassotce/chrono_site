@@ -177,6 +177,11 @@ def editPart(id):
         print epreuve['epreuve']['id']
     except:
         abort(404);
+    try :
+        request.form['hc']
+        hc = True
+    except:
+        hc = False
     url = app.config['REST_PATH']+'participant/'+str(id)
     payload={
         "etat_init":  request.form['select_etat_init'+str(id)],
@@ -190,7 +195,7 @@ def editPart(id):
         "serie": request.form['serie'],
         "num_depart": request.form['num_depart'],
         "temps_barr2": request.form['temps_barr2'],
-        "hc": False,
+        "hc": hc,
         "etat_barr2": request.form['select_etat_barr2'+str(id)],
         "nom_cavalier": request.form['nom_cavalier'],
         "temps_init": request.form['temps_init']
@@ -212,6 +217,11 @@ def addPart():
         print epreuve['epreuve']['id']
     except:
         abort(404);
+    try :
+        request.form['hc']
+        hc = True
+    except:
+        hc = False
     url = app.config['REST_PATH']+'participants/'+str(epreuve['epreuve']['id'])
     payload={
         "etat_init":  request.form['select_etat_init_add'],
@@ -225,7 +235,7 @@ def addPart():
         "serie": request.form['serie'],
         "num_depart": request.form['num_depart'],
         "temps_barr2": request.form['temps_barr2'],
-        "hc": False,
+        "hc": hc,
         "etat_barr2": request.form['select_etat_barr2_add'],
         "nom_cavalier": request.form['nom_cavalier'],
         "temps_init": request.form['temps_init']
