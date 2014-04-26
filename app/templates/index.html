@@ -2,18 +2,29 @@
 {% block content %}
 <!-- Tabs Center -->
 <ul class="tabs center">
-    <li><a href="#table">Classement {{epreuve.nom|e}}</a></li>
+    <li><a href="#table">Epreuve courante</a></li>
+    <li><a href="#other">Autres épreuves</a></li>
 </ul>
+
 
 <!-- Table sortable -->
 <div id="table" class="tab-content">
     <!-- Select -->
-    <label for="select_serie">Selectionnez la série</label>
-    <select id="select_serie">
+<h5 class="center">Classement {{epreuve.nom|e}}</h5>
+    <form action="/" >
+        <div class="col_2">
+            <label for="select_serie">Selectionnez la série</label>
+            <select id="select_serie">
         {% for i in series %}
         <option value="{{ i|e }}">{{ i|e }}</option>
         {% endfor %}
-    </select>
+        </select>
+            </div>
+        <div class="col_10">
+        <button type="submit" class="small blue"><i class=" icon-refresh"></i></button>
+            </div>
+    </form>
+    <br>
     <table class="striped tight sortable" id="myTable">
         <thead>
         <tr>
@@ -33,6 +44,48 @@
         </tbody>
     </table>
 </div>
+
+<!-- Table sortable -->
+<div id="other" class="tab-content">
+    <div class="col_12 center">
+ <div class="col_6">
+            <label for="select_epreuve">Selectionnez l'épreuve</label>
+            <select id="select_epreuve" >
+        {% for i in epreuves %}
+        <option value="{{ i.id|e }}">{{ i.nom|e }}</option>
+        {% endfor %}
+        </select>
+         <button onclick="updateClassementSpec()" class="small blue"><i class=" icon-refresh"></i></button>
+
+            </div>
+    <div class="col_6">
+            <label for="select_serie_spec">Selectionnez la série</label>
+            <select id="select_serie_spec" class="series">
+
+        </select>
+           <button onclick="reload()" class="small blue"><i class=" icon-refresh"></i></button>
+            </div>
+ <button onclick="reload()" class="large blue"><i class=" icon-refresh icon-2x"></i></button>
+</div>
+    <table class="striped tight sortable" id="spectable">
+        <thead>
+        <tr>
+            <th>Rang</th>
+            <th>Classé</th>
+            <th>Numéro de départ</th>
+            <th>Nom monture /<br>
+            Nom cavalier</th>
+            <th>Points initial /<br>Temps initial</th>
+            <th>Points barrage /<br>Temps barrage</th>
+            <th>Points barrage 2 /<br>Temps barrage 2</th>
+        </tr>
+        </thead>
+
+        <tbody id="entriesspec" class="classementspec">
+
+        </tbody>
+    </table>
+</div>
 <script type=text/javascript>
   $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 
@@ -46,7 +99,6 @@ function updateClassement()
         {},                                // With no extra parameters
         function(data)                     // And when you get a response
         {
-
 var items = [];
             json = data.participants
             $.each( json, function( key, val ) {
@@ -78,11 +130,105 @@ setInterval(updateClassement,                               //Periodically,
   50000);                                    // And do it every 50000ms
 
 
+
 updateClassement();
 
 $('#select_serie').change(function(){
 updateClassement();
 })
+
+function serieList(data){
+    json = data.participants;
+    var dict = {};
+   // $.each( json, function( key, val ) {
+   for (var i in json) {
+
+            console.log(json[i]['serie']);
+        dict[json[i]['serie']]=json[i]['serie'];
+    }
+    console.log(dict);
+
+    var numbers = dict;
+var option = '';
+console.log(numbers);
+
+for(var i in dict){
+    console.log(i);
+}
+option += '<option selected="selected" value="0">' + "selectionnez une série" + '</option>';
+for (var i in dict){
+   option += '<option value="'+ i + '">' + i + '</option>';
+   console.log(numbers[i]);
+}
+$('.series').empty();
+$('#select_serie_spec').append(option);
+
+}
+
+
+var parti="a";
+function updateClassementSpec()
+  {
+    var s_epreuve = $('#select_epreuve :selected').val();
+
+    $.getJSON(                            //Get some values from the server
+        $SCRIPT_ROOT + '/getClassement/'+s_epreuve,      // At this URL
+        {},                                // With no extra parameters
+        function(data)                     // And when you get a response
+        {
+        parti = data;
+        serieList(data);
+        });
+  }
+
+function populate(data)                     // And when you get a response
+        {
+var cur_serie = $('#select_serie_spec :selected').text();
+var items = [];
+            json = data.participants
+            $.each( json, function( key, val ) {
+            if(json[key].etat_init != "undef"){
+                json[key].temps_init = json[key].points_init = json[key].etat_init
+            }
+            if(json[key].etat_barr != "undef"){
+                json[key].temps_barr = json[key].points_barr = json[key].etat_barr
+            }
+            if(json[key].etat_barr2 != "undef"){
+                json[key].temps_barr2 = json[key].points_barr2 = json[key].etat_barr2
+            }
+            if(json[key].serie == cur_serie){
+            if(json[key].cl){
+    items.push( '<tr>	<td>'+json[key].rang+'</td>	<td><button class="small green" disabled="disabled"><i class="icon-ok-sign"></i></button></td>  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_monture+' / </br>'+ json[key].nom_cavalier+'</td><td>'+ json[key].points_init+' / </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+' / </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+' / </br>'+ json[key].temps_barr2+'</td></tr>');
+                }else{
+    items.push( '<tr>	<td>'+json[key].rang+'</td>	<td><button class="small red" disabled="disabled"><i class=" icon-remove-sign"></i></button></td>  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_monture+' / </br>'+ json[key].nom_cavalier+'</td><td>'+ json[key].points_init+' / </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+' / </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+' / </br>'+ json[key].temps_barr2+'</td></tr>');
+
+                }
+                }
+  });
+
+
+$('.classementspec').empty();
+  $('#spectable > tbody:last').append(items);
+}
+
+$('#select_serie_spec').change(function(){
+populate(parti);
+})
+
+$('#select_epreuve').change(function(){
+updateClassementSpec();
+})
+
+
+
+function reload(){
+    populate(parti);
+}
+
+updateClassementSpec();
+
+setInterval(updateClassementSpec,                               //Periodically,
+  50000);
 </script>
 
 {% endblock %}
