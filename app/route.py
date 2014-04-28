@@ -1,15 +1,41 @@
 __author__ = 'chassotce'
 from app import app
-from flask import render_template,flash,redirect,url_for,request,abort
+from functools import wraps
+from flask import render_template,flash,redirect,url_for,request,abort,session
 import requests
 from json import loads,dumps
 
+params = {'key':app.config['API_KEY']}
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            return redirect(url_for('index',_anchor='modal-login' ,next=request.url))
+    return wrap
+
+@app.route('/log',methods=['POST'])
+def login():
+    if request.form['login'] == app.config['USERNAME'] and request.form['password'] == app.config['PASS']:
+        session['logged_in']=True
+        return redirect(request.form['next'])
+    else:
+        return redirect(url_for('index',_anchor='modal-login',next=request.form['next']))
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    session.pop('logged_in',None)
+    return redirect(url_for('index'))
 
 
 @app.route('/getClassement')
 def getClassement():
     url = app.config['REST_PATH']+'bareme'
-    r = requests.get(url)
+    r = requests.get(url,params=params)
     t = r.text
     return t
 
@@ -18,7 +44,7 @@ def getClassementSpec(id):
     url = app.config['REST_PATH']+'bareme'
     payload = {"epreuve_id":id}
     headers = {'content-type': 'application/json'}
-    r = requests.post(url, data=dumps(payload), headers=headers)
+    r = requests.post(url, data=dumps(payload), headers=headers,params=params)
     t = r.text
     return t
 
@@ -26,7 +52,7 @@ def getClassementSpec(id):
 def index():
     try:
         url = app.config['REST_PATH']+'epreuves'
-        r = requests.get(url)
+        r = requests.get(url,params=params)
         epreuves = loads(r.text)
         epreuves['epreuves']
     except:
@@ -39,7 +65,7 @@ def index():
 
     try:
         url = app.config['REST_PATH']+'currentepreuve'
-        r = requests.get(url)
+        r = requests.get(url,params=params)
         epreuve = loads(r.text)
         epreuve['epreuve']
     except:
@@ -52,15 +78,16 @@ def index():
     except:
         ser={}
 
-    return render_template("index.html",series=ser,epreuve=epreuve['epreuve'],epreuves=epreuves['epreuves'])
+    return render_template("index.html",series=ser,epreuve=epreuve['epreuve'],epreuves=epreuves['epreuves'],next=request.args.get('next') or '')
 
 
 @app.route('/configuration')
+@login_required
 def configuration():
 
     try:
         url = app.config['REST_PATH']+'epreuves'
-        r = requests.get(url)
+        r = requests.get(url,params=params)
         epreuves = loads(r.text)
         epreuves['epreuves']
     except:
@@ -68,7 +95,7 @@ def configuration():
 
     try:
         url = app.config['REST_PATH']+'currentepreuve'
-        r = requests.get(url)
+        r = requests.get(url,params=params)
         epreuve = loads(r.text)
         epreuve['epreuve']
     except:
@@ -76,7 +103,7 @@ def configuration():
     try:
         url = app.config['REST_PATH']+'participants/'+str(epreuve['epreuve']['id'])
 
-        r = requests.get(url)
+        r = requests.get(url,params=params)
         t = loads(r.text)
         t['participants']
     except:
@@ -85,14 +112,15 @@ def configuration():
 
     try:
         url = app.config['REST_PATH']+'config'
-        r = requests.get(url)
+        r = requests.get(url,params=params)
         conf = loads(r.text)
         conf['config']['send_aff']
+
     except:
-        conf = {}
+        conf = {'config'}
     try:
         url = app.config['REST_PATH']+'baremes'
-        r = requests.get(url)
+        r = requests.get(url,params=params)
         baremes = loads(r.text)
         baremes['baremes']
 
@@ -102,12 +130,13 @@ def configuration():
         ,classement=t['participants'],config=conf['config'],baremes=baremes['baremes'])
     # except:
     #     url = app.config['REST_PATH']+'config'
-    #     r = requests.get(url)
+    #     r = requests.get(url,params=params)
     #     conf = loads(r.text)
     #      conf['config']['send_aff']
     #     return render_template("configuration.html",epreuves={},epreuve={},classement={},nb_serie=0,config=conf['config'])
 
 @app.route('/updateconf', methods=['POST'])
+@login_required
 def updateConfig():
     try :
         request.form['send_aff']
@@ -121,24 +150,27 @@ def updateConfig():
                "tmp_charge_chrono": request.form['tmp_charge_chrono'], "pen_tmps_depasse_2_phase": request.form['pen_tmps_depasse_2_phase']}
     headers = {'content-type': 'application/json'}
 
-    r = requests.put(url, data=dumps(payload), headers=headers)
+    r = requests.put(url, data=dumps(payload), headers=headers,params=params)
     flash('Modification de la configuration')
     return redirect(url_for('configuration'))
 
 @app.route('/newCompet')
+@login_required
 def newCompet():
     url = app.config['REST_PATH']+'new_compet'
-    r = requests.get(url)
+    r = requests.get(url,params=params)
     flash('Nouvelle competition')
     return redirect(url_for('configuration'))
 
 @app.route('/setEpreuve', methods=['POST'])
+@login_required
 def setEpreuve():
     url = app.config['REST_PATH']+'setepreuve/'+request.form['select_epreuve']
-    r=requests.get(url)
+    r=requests.get(url,params=params)
     return redirect(url_for('configuration'))
 
 @app.route('/addEpreuve',methods=['POST'])
+@login_required
 def addEpreuve():
     url = app.config['REST_PATH']+'epreuves'
 
@@ -147,18 +179,20 @@ def addEpreuve():
     'temps_accorde': request.form['temps_accorde'],
     'nb_serie': request.form['nb_serie']}
     headers = {'content-type': 'application/json'}
-    r = requests.post(url,data=dumps(payload),headers=headers)
+    r = requests.post(url,data=dumps(payload),headers=headers,params=params)
     flash('Nouvelle epreuve')
     return redirect(url_for('configuration'))
 
 @app.route('/delEpreuve/<int:id>')
+@login_required
 def delEpreuve(id):
     url = app.config['REST_PATH']+'epreuve/'+str(id)
-    r = requests.delete(url)
+    r = requests.delete(url,params=params)
     flash('Epreuve efface')
     return redirect(url_for('configuration'))
 
 @app.route('/editEpreuve/<int:id>',methods=['POST'])
+@login_required
 def editEpreuve(id):
     url = app.config['REST_PATH']+'epreuve/'+str(id)
     payload={'nom': request.form['nom'],
@@ -166,53 +200,66 @@ def editEpreuve(id):
     'temps_accorde': request.form['temps_accorde'],
     'nb_serie': request.form['nb_serie']}
     headers = {'content-type': 'application/json'}
-    r = requests.put(url,data=dumps(payload),headers=headers)
+    r = requests.put(url,data=dumps(payload),headers=headers,params=params)
     flash('Epreuve modifie')
     return redirect(url_for('configuration'))
 
-@app.route('/editPart/<int:id>',methods=['POST'])
+@app.route('/editPart/<int:id>',methods=['GET','POST'])
+@login_required
 def editPart(id):
     try:
         url = app.config['REST_PATH']+'currentepreuve'
-        r = requests.get(url)
+        r = requests.get(url,params=params)
         epreuve = loads(r.text)
         epreuve['epreuve']['id']
     except:
         abort(404);
-    try :
-        request.form['hc']
-        hc = True
-    except:
-        hc = False
-    url = app.config['REST_PATH']+'participant/'+str(id)
-    payload={
-        "etat_init":  request.form['select_etat_init'+str(id)],
-        "etat_barr": request.form['select_etat_barr'+str(id)],
-        "points_barr2": request.form['points_barr2'],
-        "points_barr":request.form['points_barr'],
-        "temps_barr": request.form['temps_barr'],
-        "id_epreuve": epreuve['epreuve']['id'],
-        "points_init": request.form['points_init'],
-        "nom_monture": request.form['nom_monture'],
-        "serie": request.form['serie'],
-        "num_depart": request.form['num_depart'],
-        "temps_barr2": request.form['temps_barr2'],
-        "hc": hc,
-        "etat_barr2": request.form['select_etat_barr2'+str(id)],
-        "nom_cavalier": request.form['nom_cavalier'],
-        "temps_init": request.form['temps_init']
-    }
-    headers = {'content-type': 'application/json'}
+    if request.method=='POST':
+        try :
+            request.form['hc']
+            hc = True
+        except:
+            hc = False
+        url = app.config['REST_PATH']+'participant/'+str(id)
+        payload={
+            "etat_init":  request.form['select_etat_init'+str(id)],
+            "etat_barr": request.form['select_etat_barr'+str(id)],
+            "points_barr2": request.form['points_barr2'],
+            "points_barr":request.form['points_barr'],
+            "temps_barr": request.form['temps_barr'],
+            "id_epreuve": epreuve['epreuve']['id'],
+            "points_init": request.form['points_init'],
+            "nom_monture": request.form['nom_monture'],
+            "serie": request.form['serie'],
+            "num_depart": request.form['num_depart'],
+            "temps_barr2": request.form['temps_barr2'],
+            "hc": hc,
+            "etat_barr2": request.form['select_etat_barr2'+str(id)],
+            "nom_cavalier": request.form['nom_cavalier'],
+            "temps_init": request.form['temps_init']
+        }
+        headers = {'content-type': 'application/json'}
 
-    r = requests.put(url,data=dumps(payload),headers=headers)
-    flash('Participant modifie')
-    return redirect(url_for('configuration'))
+        r = requests.put(url,data=dumps(payload),headers=headers,params=params)
+        flash('Participant modifie')
+        return redirect(url_for('configuration'))
+    else:
+        try:
+            url = app.config['REST_PATH']+'participant/'+str(id)
+            r = requests.get(url,params=params)
+            part = loads(r.text)
+            part['participant']
+        except:
+            part = {"participant":[]}
+        print epreuve
+        return render_template('showPart.html',part=part['participant'],epreuve=epreuve['epreuve'])
 
 @app.route('/addPart',methods=['POST'])
+@login_required
 def addPart():
     try:
         url = app.config['REST_PATH']+'currentepreuve'
-        r = requests.get(url)
+        r = requests.get(url,params=params)
         epreuve = loads(r.text)
         epreuve['epreuve']['id']
     except:
@@ -241,13 +288,14 @@ def addPart():
         "temps_init": request.form['temps_init']
     }
     headers = {'content-type': 'application/json'}
-    r = requests.post(url,data=dumps(payload),headers=headers)
+    r = requests.post(url,data=dumps(payload),headers=headers,params=params)
     flash('Nouvau participant')
     return redirect(url_for('configuration'))
 
 @app.route('/deletePart/<int:id>')
+@login_required
 def delPart(id):
     url = app.config['REST_PATH']+'participant/'+str(id)
-    r = requests.delete(url)
+    r = requests.delete(url,params=params)
     flash('Participant supprime')
     return redirect(url_for('configuration'))

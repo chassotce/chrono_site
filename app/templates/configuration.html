@@ -171,28 +171,24 @@ form.mbt {
            <!-- <th>Rang</th>-->
             <th>Série</th>
             <!--<th>Classé</th>-->
-            <th>Numéro de départ / <br> Hors-concours</th>
-            <th>Nom monture /<br>Nom cavalier</th>
-            <th>Points initial /<br>Temps initial</th>
+            <th>Numéro de départ  <br> Hors-concours</th>
+            <th>Nom cavalier <br>Nom cheval</th>
+            <th>Points initial <br>Temps initial</th>
             <th>Etat initial</th>
-            <th>Points barrage /<br>Temps barrage</th>
+            <th>Points barrage <br>Temps barrage</th>
             <th>Etat barrage</th>
-            <th>Points barrage 2 /<br>Temps barrage 2</th>
+            <th>Points barrage 2 <br>Temps barrage 2</th>
             <th>Etat barrage 2</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
         </thead>
 
        <tbody>
         {% for part in classement %}
-         <form action="/editPart/{{part.id}}" id="editPart{{part.id}}" class="mbt" method="post">
+         <form action="/editPart/{{part.id}}" id="editPart{{part.id}}" class="mbt" method="get">
         <tr>
             <!--<td>{{ part.rang|e}}</td>-->
-            <td><select id="select_serie_part" name="serie" form="editPart{{part.id}}">
-        {% for i in range(1,epreuve.nb_serie+1) %}
-        <option value="{{ i|e }}" {% if part.serie == i %} selected="selected" {% endif %}>{{ i|e }}</option>
-        {% endfor %}
-    </select> </td>
+            <td>{{ part.serie|e }}</td>
       <!--      {% if part.cl %}
             <td>
                 <button class="small green" disabled="disabled"><i class="icon-ok-sign"></i></button>
@@ -203,34 +199,19 @@ form.mbt {
             </td>
             {% endif %}
 -->
-            <td><input type="number" value="{{ part.num_depart|e}}" name="num_depart">
-                <input type="checkbox" name="hc" id="hc" {% if part.hc %} checked="checked" {% endif %}/></td>
-            <td><input type="text" value="{{ part.nom_monture|e}}" name="nom_monture"> /<br><input type="text" value="{{ part.nom_cavalier|e}}" name="nom_cavalier"></td>
-            <td><input type="number" step="0.25" value="{{ part.points_init|e}}" name="points_init"> /<br><input type="number" value="{{ part.temps_init|e}}" name="temps_init"></td>
-            <td><select id="select_etat_init{{part.id}}" name="select_etat_init{{part.id}}" form="editPart{{part.id}}">
-        <option value="undef" {% if part.etat_init == "undef" %} selected="selected" {% endif %} >undef</option>
-                 <option value="elimine" {% if part.etat_init == "elimine" %} selected="selected" {% endif %} >elimine</option>
-                 <option value="abandon" {% if part.etat_init == "abandon" %} selected="selected" {% endif %} >abandon</option>
-
-    </select></td>
-            <td><input type="number" step="0.25" value="{{ part.points_barr|e}}" name="points_barr"> /<br><input type="number" value="{{ part.temps_barr|e}}" name="temps_barr"></td>
-            <td><select id="select_etat_barr{{part.id}}" name="select_etat_barr{{part.id}}" form="editPart{{part.id}}">
-        <option value="undef" {% if part.etat_barr == "undef" %} selected="selected" {% endif %} >undef</option>
-                 <option value="elimine" {% if part.etat_barr == "elimine" %} selected="selected" {% endif %} >elimine</option>
-                 <option value="abandon" {% if part.etat_barr == "abandon" %} selected="selected" {% endif %} >abandon</option>
-
-    </select></td>
-           <td><input type="number" step="0.25" value="{{ part.points_barr2|e}}" name="points_barr2"> /<br><input type="number" value="{{ part.temps_barr2|e}}" name="temps_barr2"></td>
-            <td><select id="select_etat_barr2{{part.id}}" name="select_etat_barr2{{part.id}}" form="editPart{{part.id}}">
-        <option value="undef" {% if part.etat_barr2 == "undef" %} selected="selected" {% endif %} >undef</option>
-                 <option value="elimine" {% if part.etat_barr2 == "elimine" %} selected="selected" {% endif %} >elimine</option>
-                 <option value="abandon" {% if part.etat_barr2 == "abandon" %} selected="selected" {% endif %} >abandon</option>
-
-    </select></td>
+            <td>{{ part.num_depart|e}} <br>
+                <input type="checkbox" {% if part.hc %} checked="checked" {% endif %}/></td>
+            <td>{{ part.nom_cavalier|e}}<br>{{ part.nom_monture|e}}</td>
+            <td>{{ part.points_init|e}}<br>{{ part.temps_init|e}}</td>
+            <td>{{ part.etat_init|e}}</td>
+            <td>{{ part.points_barr|e}}<br>{{ part.temps_barr|e}}</td>
+            <td>{{ part.etat_barr|e}}</td>
+           <td>{{ part.points_barr2|e}}<br>{{ part.temps_barr2|e}}</td>
+            <td>{{ part.etat_barr2 }}</td>
 
             <th>
             <button class="medium red" type="button" onclick="self.location.href='/deletePart/{{part.id}}'"><i class=" icon-minus"></i></a></button>
-            <button class="medium orange" type="submit" > <i class=" icon-save"></i></button>
+            <button class="medium orange" type="submit" > <i class=" icon-wrench"></i></button>
             </th>
         </tr>
         </form>
@@ -246,22 +227,22 @@ form.mbt {
 
             <td><input type="number" name="num_depart" required="true">
             <input type="checkbox" name="hc" id="hc_add" /></td>
-            <td><input type="text"  name="nom_monture"> /<br><input type="text"  name="nom_cavalier"></td>
-            <td><input type="number" step="0.25"  name="points_init"value="0" required="true"> /<br><input type="number" value="0" required="true" name="temps_init"></td>
+            <td><input type="text"  name="nom_monture"> <br><input type="text"  name="nom_cavalier"></td>
+            <td><input  type="number" step="0.25"  name="points_init"value="0" required="true"> <br><input type="number" value="0" required="true" name="temps_init"></td>
             <td><select id="select_etat_init_add" name="select_etat_init_add" form="addPart">
         <option value="undef"  >undef</option>
                  <option value="elimine"  >elimine</option>
                  <option value="abandon"  >abandon</option>
 
     </select></td>
-            <td><input type="number" step="0.25"  name="points_barr"value="0" required="true"> /<br><input type="number" value="0" required="true" name="temps_barr"></td>
+            <td><input type="number" step="0.25"  name="points_barr"value="0" required="true"> <br><input type="number" value="0" required="true" name="temps_barr"></td>
             <td><select id="select_etat_barr_add" name="select_etat_barr_add" form="addPart">
         <option value="undef" selected="selected">undef</option>
                  <option value="elimine" >elimine</option>
                  <option value="abandon" >abandon</option>
 
     </select></td>
-           <td><input type="number" step="0.25"  name="points_barr2" value="0" required="true"> /<br><input type="number" value="0" required="true" name="temps_barr2"></td>
+           <td><input type="number" step="0.25"  name="points_barr2" value="0" required="true"> <br><input type="number" value="0" required="true" name="temps_barr2"></td>
             <td><select id="select_etat_barr2_add" name="select_etat_barr2_add" form="addPart">
         <option value="undef" selected="selected">undef</option>
                  <option value="elimine" >elimine</option>
@@ -303,7 +284,7 @@ form.mbt {
             <input required="True" type="number" class="inline" name="pen_tmps_depasse_barr" id="pen_tmps_depasse_barr" step="0.25" min="0" value="{{config.pen_tmps_depasse_barr|e}}">
 
             <label for="pen_tmps_depasse_2_phase">Pénalité en cas de temps dépassé dans la phase 2<span class="right">Points</span></label>
-            <input required="True" type="number" class="inline" name="pen_tmps_depasse_2_phase" id="pen_tmps_depasse_2_phase" step="0.25" min="0" value="{{config.pen_tmps_depasse_2_phase|e}}">
+            <input required="True" type="number" class="inline" name="pen_tmps_depasse_2_phase" id="pen_tmps_depasse_2_phase" step="0.25" min="0"  value="{{config.pen_tmps_depasse_2_phase|e}}">
 
 </div>
 
@@ -322,10 +303,6 @@ form.mbt {
 $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 
 $('#select_epreuve').change(function(){
-        this.form.submit();
-})
-
-$('#select_epreuve').onload(function(){
         this.form.submit();
 })
  </script>

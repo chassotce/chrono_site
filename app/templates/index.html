@@ -29,13 +29,12 @@
         <thead>
         <tr>
             <th>Rang</th>
-            <th>Classé</th>
             <th>Numéro de départ</th>
-            <th>Nom monture /<br>
-            Nom cavalier</th>
-            <th>Points initial /<br>Temps initial</th>
-            <th>Points barrage /<br>Temps barrage</th>
-            <th>Points barrage 2 /<br>Temps barrage 2</th>
+            <th>Nom cavalier <br>
+            Nom cheval</th>
+            <th>Points initial <br>Temps initial</th>
+            <th>Points barrage <br>Temps barrage</th>
+            <th>Points barrage 2 <br>Temps barrage 2</th>
         </tr>
         </thead>
 
@@ -71,13 +70,12 @@
         <thead>
         <tr>
             <th>Rang</th>
-            <th>Classé</th>
             <th>Numéro de départ</th>
-            <th>Nom monture /<br>
-            Nom cavalier</th>
-            <th>Points initial /<br>Temps initial</th>
-            <th>Points barrage /<br>Temps barrage</th>
-            <th>Points barrage 2 /<br>Temps barrage 2</th>
+            <th>Nom cavalier <br>
+            Nom cheval</th>
+            <th>Points initial <br>Temps initial</th>
+            <th>Points barrage <br>Temps barrage</th>
+            <th>Points barrage 2 <br>Temps barrage 2</th>
         </tr>
         </thead>
 
@@ -113,9 +111,9 @@ var items = [];
             }
             if(json[key].serie == cur_serie){
             if(json[key].cl){
-    items.push( '<tr>	<td>'+json[key].rang+'</td>	<td><button class="small green" disabled="disabled"><i class="icon-ok-sign"></i></button></td>  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_monture+' / </br>'+ json[key].nom_cavalier+'</td><td>'+ json[key].points_init+' / </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+' / </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+' / </br>'+ json[key].temps_barr2+'</td></tr>');
+    items.push( '<tr >	<td><button class="medium green" disabled="disabled">'+json[key].rang+'</button></td>	  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2+'</td></tr>');
                 }else{
-    items.push( '<tr>	<td>'+json[key].rang+'</td>	<td><button class="small red" disabled="disabled"><i class=" icon-remove-sign"></i></button></td>  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_monture+' / </br>'+ json[key].nom_cavalier+'</td><td>'+ json[key].points_init+' / </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+' / </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+' / </br>'+ json[key].temps_barr2+'</td></tr>');
+    items.push( '<tr bgcolor="#B0B0B0">	<td><button class="medium red" disabled="disabled">'+json[key].rang+'</button></td> </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2+'</td></tr>');
 
                 }
                 }
@@ -198,9 +196,9 @@ var items = [];
             }
             if(json[key].serie == cur_serie){
             if(json[key].cl){
-    items.push( '<tr>	<td>'+json[key].rang+'</td>	<td><button class="small green" disabled="disabled"><i class="icon-ok-sign"></i></button></td>  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_monture+' / </br>'+ json[key].nom_cavalier+'</td><td>'+ json[key].points_init+' / </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+' / </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+' / </br>'+ json[key].temps_barr2+'</td></tr>');
+    items.push( '<tr >	<td><button class="medium green" disabled="disabled">'+json[key].rang+'</button></td>	  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2+'</td></tr>');
                 }else{
-    items.push( '<tr>	<td>'+json[key].rang+'</td>	<td><button class="small red" disabled="disabled"><i class=" icon-remove-sign"></i></button></td>  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_monture+' / </br>'+ json[key].nom_cavalier+'</td><td>'+ json[key].points_init+' / </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+' / </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+' / </br>'+ json[key].temps_barr2+'</td></tr>');
+    items.push( '<tr bgcolor="#B0B0B0">	<td><button class="medium red" disabled="disabled">'+json[key].rang+'</button></td> </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2+'</td></tr>');
 
                 }
                 }

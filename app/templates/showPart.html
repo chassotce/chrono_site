@@ -1,0 +1,90 @@
+{% extends "template.html" %}
+{% block content %}
+
+
+<!-- Tabs Center -->
+<ul class="tabs center">
+    <li><a href="#table">Participant {{part.num_depart|e}}<br> Epreuve : {{epreuve.nom|e}}</a></li>
+</ul>
+
+<!-- Table sortable -->
+<div id="table" class="tab-content">
+<form action="/editPart/{{part.id}}" id="editPart{{part.id}}" class="mbt" method="post">
+   <table class="striped tight sortable" id="myTable">
+        <thead>
+        <tr>
+           <!-- <th>Rang</th>-->
+            <th>Série</th>
+            <!--<th>Classé</th>-->
+            <th>Numéro de départ  <br> Hors-concours</th>
+            <th>Nom cavalier <br>Nom cheval</th>
+            <th>Points initial <br>Temps initial</th>
+            <th>Etat initial</th>
+            <th>Points barrage <br>Temps barrage</th>
+            <th>Etat barrage</th>
+            <th>Points barrage 2 <br>Temps barrage 2</th>
+            <th>Etat barrage 2</th>
+        </tr>
+        </thead>
+
+       <tbody>
+
+        <tr>
+            <!--<td>{{ part.rang|e}}</td>-->
+            <td><select id="select_serie_part" name="serie" form="editPart{{part.id}}">
+        {% for i in range(1,epreuve.nb_serie+1) %}
+        <option value="{{ i|e }}" {% if part.serie == i %} selected="selected" {% endif %}>{{ i|e }}</option>
+        {% endfor %}
+    </select> </td>
+      <!--      {% if part.cl %}
+            <td>
+                <button class="small green" disabled="disabled"><i class="icon-ok-sign"></i></button>
+            </td>
+            {% else %}
+            <td>
+                <button class="small red" disabled="disabled"><i class=" icon-remove-sign"></i></button>
+            </td>
+            {% endif %}
+-->
+            <td><input type="number" value="{{ part.num_depart|e}}" name="num_depart">
+                <input type="checkbox" name="hc" id="hc" {% if part.hc %} checked="checked" {% endif %}/></td>
+            <td><input type="text" value="{{ part.nom_cavalier|e}}" name="nom_cavalier"> <br><input type="text" value="{{ part.nom_monture|e}}" name="nom_monture"></td>
+            <td><input type="number" step="0.25" value="{{ part.points_init|e}}" name="points_init"> <br><input type="number" value="{{ part.temps_init|e}}" name="temps_init"></td>
+            <td><select id="select_etat_init{{part.id}}" name="select_etat_init{{part.id}}" form="editPart{{part.id}}">
+        <option value="undef" {% if part.etat_init == "undef" %} selected="selected" {% endif %} >undef</option>
+                 <option value="elimine" {% if part.etat_init == "elimine" %} selected="selected" {% endif %} >elimine</option>
+                 <option value="abandon" {% if part.etat_init == "abandon" %} selected="selected" {% endif %} >abandon</option>
+
+    </select></td>
+            <td><input type="number" step="0.25" value="{{ part.points_barr|e}}" name="points_barr"> <br><input type="number" value="{{ part.temps_barr|e}}" name="temps_barr"></td>
+            <td><select id="select_etat_barr{{part.id}}" name="select_etat_barr{{part.id}}" form="editPart{{part.id}}">
+        <option value="undef" {% if part.etat_barr == "undef" %} selected="selected" {% endif %} >undef</option>
+                 <option value="elimine" {% if part.etat_barr == "elimine" %} selected="selected" {% endif %} >elimine</option>
+                 <option value="abandon" {% if part.etat_barr == "abandon" %} selected="selected" {% endif %} >abandon</option>
+
+    </select></td>
+           <td><input type="number" step="0.25" value="{{ part.points_barr2|e}}" name="points_barr2"> <br><input type="number" value="{{ part.temps_barr2|e}}" name="temps_barr2"></td>
+            <td><select id="select_etat_barr2{{part.id}}" name="select_etat_barr2{{part.id}}" form="editPart{{part.id}}">
+        <option value="undef" {% if part.etat_barr2 == "undef" %} selected="selected" {% endif %} >undef</option>
+                 <option value="elimine" {% if part.etat_barr2 == "elimine" %} selected="selected" {% endif %} >elimine</option>
+                 <option value="abandon" {% if part.etat_barr2 == "abandon" %} selected="selected" {% endif %} >abandon</option>
+
+    </select></td>
+
+
+        </tr>
+
+
+
+        </tbody>
+    </table>
+
+            <button class="medium green " type="submit" style="float: right;"> <i class=" icon-save"></i></button>
+
+     </form>
+    <a href="/configuration">
+    <button class="medium " onclick="self.location.href='/configuration'" style="float: right;"> <i class=" icon-reply"></i></button>
+</div>
+
+{% endblock %}
+
