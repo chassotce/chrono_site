@@ -200,7 +200,7 @@ form.mbt {
             {% endif %}
 -->
             <td>{{ part.num_depart|e}} <br>
-                <input type="checkbox" {% if part.hc %} checked="checked" {% endif %}/></td>
+                <input disabled="disabled" type="checkbox" {% if part.hc %} checked="checked" {% endif %}/></td>
             <td>{{ part.nom_cavalier|e}}<br>{{ part.nom_monture|e}}</td>
             <td>{{ part.points_init|e}}<br>{{ part.temps_init|e}}</td>
             <td>{{ part.etat_init|e}}</td>

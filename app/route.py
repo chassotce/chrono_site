@@ -299,3 +299,14 @@ def delPart(id):
     r = requests.delete(url,params=params)
     flash('Participant supprime')
     return redirect(url_for('configuration'))
+
+@app.route('/isCon')
+def isCon():
+    url = app.config['REST_PATH']+'connection'
+    r = requests.get(url,params=params)
+    t = loads(r.text)
+    if t['connection']:
+        r = "true"
+    else:
+        r = "false"
+    return r

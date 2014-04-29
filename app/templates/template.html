@@ -12,6 +12,30 @@
 	<!-- Javascript -->
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script type="text/javascript" src="../static/js/kickstart.js"></script>
+    <script type=text/javascript>
+$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+function conn(){
+$.getJSON(                            //Get some values from the server
+        $SCRIPT_ROOT + '/isCon',      // At this URL
+        {},                                // With no extra parameters
+        function(data)                     // And when you get a response
+        {
+            if(data != true){
+                $('#connect').removeClass("green");
+                $('#connect').addClass("red");
+            }else{
+                $('#connect').removeClass("red");
+                $('#connect').addClass("green");
+            }
+        });
+}
+
+conn();
+
+setInterval(conn,                               //Periodically,
+  5000);
+</script>
       <style>
 .btn-close {
   color: #aaaaaa;
@@ -110,14 +134,17 @@
      {% if session.logged_in %}
 <li{% if request.path == "/configuration" %} class="current"{% endif %}><a href="/configuration">Config</a></li>
      {% endif %}
+
+
  {% if session.logged_in %}
         <li class="right"{% if request.path == "/logout" %} class="active"{% endif %}><a  href="/logout">Logout</a></li>
        {% else %}
       <li class="right"{% if request.path == "/log" %} class="active"{% endif %}><a  href="#modal-login">Login</a></li>
        {% endif %}
+
+    <li  class="right"><button id="connect" disabled="disabled" class="pill green"><i class=" icon-circle-blank"></i></button></li>
 </ul>
     {% block content %}
     {% endblock %}
 </div> <!-- End Grid -->
-</body>
 </html>
