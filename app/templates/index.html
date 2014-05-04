@@ -10,7 +10,7 @@
 <!-- Table sortable -->
 <div id="table" class="tab-content">
     <!-- Select -->
-<h5 class="center">Classement {{epreuve.nom|e}}</h5>
+<h5 class="center" id="nomClassement">Classement {{epreuve.nom|e}}</h5>
     <form action="/" >
         <div class="col_2">
             <label for="select_serie">Selectionnez la série</label>
@@ -91,6 +91,16 @@
 <script type=text/javascript>
 function updateClassement()
   {
+
+  $.getJSON(                            //Get some values from the server
+        $SCRIPT_ROOT + '/getCurrentEpreuve',      // At this URL
+        {},                                // With no extra parameters
+        function(data)                     // And when you get a response
+        {
+        json = data.epreuve
+        $('#nomClassement').text("Classement "+json.nom);
+        });
+
   var cur_serie = $('#select_serie :selected').text();
      $.getJSON(                            //Get some values from the server
         $SCRIPT_ROOT + '/getClassement',      // At this URL
@@ -101,19 +111,22 @@ var items = [];
             json = data.participants
             $.each( json, function( key, val ) {
             if(json[key].etat_init != "undef"){
-                json[key].temps_init = json[key].points_init = json[key].etat_init
+                 json[key].points_init = json[key].etat_init
+                 json[key].temps_init =0
             }
             if(json[key].etat_barr != "undef"){
-                json[key].temps_barr = json[key].points_barr = json[key].etat_barr
+                 json[key].points_barr = json[key].etat_barr
+                 json[key].temps_barr =0
             }
             if(json[key].etat_barr2 != "undef"){
-                json[key].temps_barr2 = json[key].points_barr2 = json[key].etat_barr2
+                 json[key].points_barr2 = json[key].etat_barr2
+                 json[key].temps_barr2 = 0
             }
             if(json[key].serie == cur_serie){
             if(json[key].cl){
-    items.push( '<tr >	<td><button class="medium green" disabled="disabled">'+json[key].rang+'</button></td>	  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2+'</td></tr>');
+    items.push( '<tr >	<td><button class="medium green" disabled="disabled">'+json[key].rang+'</button></td>	  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init / 100+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr / 100+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2/100+'</td></tr>');
                 }else{
-    items.push( '<tr bgcolor="#B0B0B0">	<td><button class="medium red" disabled="disabled">'+json[key].rang+'</button></td> </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2+'</td></tr>');
+    items.push( '<tr bgcolor="#B0B0B0">	<td><button class="medium red" disabled="disabled">'+json[key].rang+'</button></td> </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init/100+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr/100+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2/100+'</td></tr>');
 
                 }
                 }
@@ -125,7 +138,7 @@ $('.classement').empty();
         });
   }
 setInterval(updateClassement,                               //Periodically,
-  50000);                                    // And do it every 50000ms
+  5000);                                    // And do it every 50000ms
 
 
 
@@ -186,19 +199,22 @@ var items = [];
             json = data.participants
             $.each( json, function( key, val ) {
             if(json[key].etat_init != "undef"){
-                json[key].temps_init = json[key].points_init = json[key].etat_init
+                 json[key].points_init = json[key].etat_init
+                 json[key].temps_init =0
             }
             if(json[key].etat_barr != "undef"){
-                json[key].temps_barr = json[key].points_barr = json[key].etat_barr
+                 json[key].points_barr = json[key].etat_barr
+                 json[key].temps_barr =0
             }
             if(json[key].etat_barr2 != "undef"){
-                json[key].temps_barr2 = json[key].points_barr2 = json[key].etat_barr2
+                 json[key].points_barr2 = json[key].etat_barr2
+                 json[key].temps_barr2 = 0
             }
             if(json[key].serie == cur_serie){
             if(json[key].cl){
-    items.push( '<tr >	<td><button class="medium green" disabled="disabled">'+json[key].rang+'</button></td>	  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2+'</td></tr>');
+    items.push( '<tr >	<td><button class="medium green" disabled="disabled">'+json[key].rang+'</button></td>	  </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init / 100+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr / 100+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2/100+'</td></tr>');
                 }else{
-    items.push( '<tr bgcolor="#B0B0B0">	<td><button class="medium red" disabled="disabled">'+json[key].rang+'</button></td> </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2+'</td></tr>');
+    items.push( '<tr bgcolor="#B0B0B0">	<td><button class="medium red" disabled="disabled">'+json[key].rang+'</button></td> </td><td>'+ json[key].num_depart+'</td><td>'+ json[key].nom_cavalier+'  </br>'+ json[key].nom_monture+'</td><td>'+ json[key].points_init+'  </br>'+ json[key].temps_init/100+'</td><td>'+ json[key].points_barr+'  </br>'+ json[key].temps_barr/100+'</td><td>'+ json[key].points_barr2+'  </br>'+ json[key].temps_barr2/100+'</td></tr>');
 
                 }
                 }
@@ -226,7 +242,7 @@ function reload(){
 updateClassementSpec();
 
 setInterval(updateClassementSpec,                               //Periodically,
-  50000);
+  5000);
 </script>
 
 {% endblock %}

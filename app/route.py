@@ -71,7 +71,7 @@ def index():
     except:
         epreuve = {'epreuve':{}}
     try:
-        ser = {}
+        ser = {1:1}
         for p in data['participants']:
             ser[p['serie']]=p['serie']
             ser
@@ -310,3 +310,9 @@ def isCon():
     else:
         r = "false"
     return r
+
+@app.route('/getCurrentEpreuve')
+def getCurrentEpreuve():
+    url = app.config['REST_PATH']+'currentepreuve'
+    r = requests.get(url,params=params)
+    return r.text

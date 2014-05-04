@@ -34,7 +34,7 @@ $.getJSON(                            //Get some values from the server
 conn();
 
 setInterval(conn,                               //Periodically,
-  5000);
+  50000);
 </script>
       <style>
 .btn-close {
@@ -139,7 +139,7 @@ setInterval(conn,                               //Periodically,
  {% if session.logged_in %}
         <li class="right"{% if request.path == "/logout" %} class="active"{% endif %}><a  href="/logout">Logout</a></li>
        {% else %}
-      <li class="right"{% if request.path == "/log" %} class="active"{% endif %}><a  href="#modal-login">Login</a></li>
+      <li class="right"{% if request.path == "/log" %} class="active"{% endif %}><a  href="/configuration">Login</a></li>
        {% endif %}
 
     <li  class="right"><button id="connect" disabled="disabled" class="pill green"><i class=" icon-circle-blank"></i></button></li>
