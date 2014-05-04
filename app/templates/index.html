@@ -13,7 +13,7 @@
 <h5 class="center" id="nomClassement">Classement {{epreuve.nom|e}}</h5>
     <form action="/" >
         <div class="col_2">
-            <label for="select_serie">Selectionnez la série</label>
+            <label for="select_serie">Sélectionnez la série</label>
             <select id="select_serie">
         {% for i in series %}
         <option value="{{ i|e }}">{{ i|e }}</option>
@@ -30,11 +30,11 @@
         <tr>
             <th>Rang</th>
             <th>Numéro de départ</th>
-            <th>Nom cavalier <br>
-            Nom cheval</th>
-            <th>Points initial <br>Temps initial</th>
-            <th>Points barrage <br>Temps barrage</th>
-            <th>Points barrage 2 <br>Temps barrage 2</th>
+            <th>Nom du cavalier <br>
+            Nom de la monture</th>
+            <th>Points initiaux <br>Temps initial</th>
+            <th>Points du barrage <br>Temps du barrage</th>
+            <th>Points du second barrage <br>Temps du second barrage</th>
         </tr>
         </thead>
 
@@ -48,7 +48,7 @@
 <div id="other" class="tab-content">
     <div class="col_12 center">
  <div class="col_6">
-            <label for="select_epreuve">Selectionnez l'épreuve</label>
+            <label for="select_epreuve">Sélectionnez l'épreuve</label>
             <select id="select_epreuve" >
         {% for i in epreuves %}
         <option value="{{ i.id|e }}">{{ i.nom|e }}</option>
@@ -58,7 +58,7 @@
 
             </div>
     <div class="col_6">
-            <label for="select_serie_spec">Selectionnez la série</label>
+            <label for="select_serie_spec">Sélectionnez la série</label>
             <select id="select_serie_spec" class="series">
 
         </select>
@@ -71,11 +71,11 @@
         <tr>
             <th>Rang</th>
             <th>Numéro de départ</th>
-            <th>Nom cavalier <br>
-            Nom cheval</th>
-            <th>Points initial <br>Temps initial</th>
-            <th>Points barrage <br>Temps barrage</th>
-            <th>Points barrage 2 <br>Temps barrage 2</th>
+            <th>Nom du cavalier <br>
+            Nom de la monture</th>
+            <th>Points initiaux <br>Temps initial</th>
+            <th>Points du barrage <br>Temps du barrage</th>
+            <th>Points du second barrage<br>Temps du second barrage</th>
         </tr>
         </thead>
 

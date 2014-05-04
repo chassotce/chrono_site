@@ -48,13 +48,13 @@
     </select>
         <label for="add_epreuve_temps_accorde">Temps accordé<span class="right">Secondes</span></label>
         <input name="temps_accorde" type="number" id="add_epreuve_temps_accorde" required="True">
-        <label for="add_epreuve_serie">Nombre de série</span></label>
+        <label for="add_epreuve_serie">Nombre de séries</span></label>
         <input name="nb_serie" type="number" value="1" id="add_epreuve_serie" required="True">
     </div>
     <div class="modal-footer">
 
       <a href="#" class="btn">Retour</a>
-        <button class="medium" type="submit"><i class="icon-save"> Save </i></button>
+        <button class="medium" type="submit"><i class="icon-save"> Sauver </i></button>
 
     </div>
             </form>
@@ -103,7 +103,7 @@
     </select>
         <label for="edit_epreuve_temps_accorde">Temps accordé<span class="right">Secondes</span></label>
         <input name="temps_accorde" type="number" id="edit_epreuve_temps_accorde" required="True" value="{{epreuve.temps_accorde|e}}">
-        <label for="edit_epreuve_serie">Nombre de série</span></label>
+        <label for="edit_epreuve_serie">Nombre de séries</span></label>
         <input name="nb_serie" type="number" id="edit_epreuve_serie" required="True" value="{{epreuve.nb_serie|e}}">
     </div>
     <div class="modal-footer">
@@ -120,7 +120,7 @@
 <!-- Tabs Center -->
 <ul class="tabs center">
     <li><a href="#table">Compétition</a></li>
-    <li><a href="#param">Paramètre</a></li>
+    <li><a href="#param">Paramètres</a></li>
 </ul>
 
 <!-- Table sortable -->
@@ -128,9 +128,9 @@
 
         <div class="col_5">
             <fieldset>
-	<legend>Séléction,Ajout,Suppression,Edition d'épreuve</legend>
+	<legend>Séléction, Ajout, Suppression, Edition d'épreuve</legend>
             <form action="/setEpreuve" method="post" id="form-epreuve" class="mbt" >
-    <label for="select_epreuve">Selectionnez l'épreuve courante :</label>
+    <label for="select_epreuve">Sélectionnez l'épreuve courante :</label>
 
     <select id="select_epreuve" name="select_epreuve" form="form-epreuve">
         {% for i in epreuves %}
@@ -172,13 +172,13 @@ form.mbt {
             <th>Série</th>
             <!--<th>Classé</th>-->
             <th>Numéro de départ  <br> Hors-concours</th>
-            <th>Nom cavalier <br>Nom cheval</th>
-            <th>Points initial <br>Temps initial</th>
+            <th>Nom du cavalier <br>Nom de la monture</th>
+            <th>Points initiaux <br>Temps initial</th>
             <th>Etat initial</th>
-            <th>Points barrage <br>Temps barrage</th>
-            <th>Etat barrage</th>
-            <th>Points barrage 2 <br>Temps barrage 2</th>
-            <th>Etat barrage 2</th>
+            <th>Points du barrage <br>Temps du barrage</th>
+            <th>Etat au barrage</th>
+            <th>Points du second barrage <br>Temps du second barrage</th>
+            <th>Etat au second barrage</th>
             <th>Actions</th>
         </tr>
         </thead>
