@@ -25,6 +25,11 @@ def login():
         return redirect(url_for('index',_anchor='modal-login',next=request.form['next']))
 
 
+@app.route('/poney')
+@login_required
+def poney():
+    return render_template('poney.html')
+
 @app.route('/logout')
 @login_required
 def logout():
