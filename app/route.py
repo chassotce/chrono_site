@@ -256,7 +256,6 @@ def editPart(id):
             part['participant']
         except:
             part = {"participant":[]}
-        print epreuve
         return render_template('showPart.html',part=part['participant'],epreuve=epreuve['epreuve'])
 
 @app.route('/addPart',methods=['POST'])
